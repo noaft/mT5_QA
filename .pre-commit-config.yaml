@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: trailing-whitespace  # check whitespace redundant in code
+      - id: end-of-file-fixer  # check not exist any white line
+      - id: check-yaml  
+      - id: check-added-large-files  # warning when add larger file > 500kb to push 
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black  # Format mã nguồn Python theo chuẩn Black
