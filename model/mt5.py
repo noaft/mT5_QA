@@ -1,4 +1,4 @@
-from transformers import MT5ForConditionalGeneration, AutoTokenizer
+from transformers import AutoTokenizer, MT5ForQustionAnswering
 import torch
 
 class config:
@@ -26,9 +26,9 @@ class Model:
         
         # Load model from local path if provided
         if path_model:
-            self.model = MT5ForConditionalGeneration.from_pretrained(path_model)
+            self.model = MT5ForQustionAnswering.from_pretrained(path_model)
         else:
-            self.model = MT5ForConditionalGeneration.from_pretrained(model_name)
+            self.model = MT5ForQustionAnswering.from_pretrained(model_name)
         
         # Load tokenizer from local path if provided
         if path_token:
@@ -58,8 +58,30 @@ class Model:
         with torch.no_grad():
             outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
         
+        
         # Decode the predicted answer
         answer_ids = outputs[0].argmax(dim=-1).squeeze().cpu().numpy()
         answer = self.tokenizer.decode(answer_ids, skip_special_tokens=True)
 
         return answer
+
+    def trainning(self, data):
+        """
+        Trainning data with data fomated same like Squad
+        data:{
+            data:{
+                context{
+                .....
+                },
+                qa{
+                    qas: question here
+                    ,
+                    ans:{
+                        answer: answer here,
+                        start position: position first text in paragraphs
+                    }
+                }
+            }
+        }
+        """
+        pass
