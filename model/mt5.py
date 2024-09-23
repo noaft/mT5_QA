@@ -47,23 +47,25 @@ class Model:
         question: Question to find the answer for
         """
         # Tokenize the input
-        inputs = self.tokenizer.encode_plus(
-            question, context, add_special_tokens=True, return_tensors='pt'
-        )
-        
-        input_ids = inputs['input_ids'].to(self.device)
-        attention_mask = inputs['attention_mask'].to(self.device)
-
-        # Get model predictions
+        inputs = tokenizer(question, context, return_tensors="pt")
+        # Perform inference (this returns the start and end logits for the answer span)
         with torch.no_grad():
-            outputs = self.model(input_ids=input_ids, attention_mask=attention_mask)
-        
-        
-        # Decode the predicted answer
-        answer_ids = outputs[0].argmax(dim=-1).squeeze().cpu().numpy()
-        answer = self.tokenizer.decode(answer_ids, skip_special_tokens=True)
+            outputs = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"])
 
-        return answer
+        # Extract start and end logits
+        start_logits = outputs.start_logits
+        end_logits = outputs.end_logits
+
+        # Get the most likely start and end token positions
+        start_position = torch.argmax(start_logits)
+        end_position = torch.argmax(end_logits)
+
+        # Decode the answer tokens
+        answer_tokens = inputs["input_ids"][0][start_position:end_position+1]
+        answer = tokenizer.decode(answer_tokens)
+        returns answer
+
+
 
     def trainning(self, data):
         """
