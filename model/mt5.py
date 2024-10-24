@@ -3,8 +3,8 @@ from transformers import MT5ForConditionalGeneration, T5Tokenizer
 
 class model:
 
-    def __init__(Path, tokenizer):
-        sel.model = MT5ForConditionalGeneration.from_pretrained(model_name)
+    def __init__(self, path, tokenizer):
+        self.model = MT5ForConditionalGeneration.from_pretrained(path)
         self.tokenizer = T5Tokenizer.from_pretrained('google/mt5-small')
 
     def answer_question(self, question, context ):
